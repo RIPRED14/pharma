@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pharmacie En Ligne - E-Boutique Officine</title>
+  
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Public layout specific overrides */
+    body {
+      overflow-y: auto !important;
+      display: block !important;
+      background-color: var(--bg-primary);
+    }
+    
+    .public-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    .public-header {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      padding: 20px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .public-header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .hero-banner {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      padding: 40px;
+      border-radius: var(--radius-lg);
+      margin: 30px 0;
+      text-align: center;
+      box-shadow: var(--shadow-main);
+    }
+
+    .hero-banner h2 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-banner p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    .public-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 32px;
+      margin-bottom: 60px;
+    }
+
+    @media (max-width: 900px) {
+      .public-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Override item style for public site */
+    .public-prod-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: all var(--transition-fast);
+    }
+
+    .public-prod-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-main);
+      border-color: var(--primary);
+    }
+
+    .public-cart-card {
+      position: sticky;
+      top: 100px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-main);
+    }
+
+    .btn-add-cart {
+      background: var(--primary);
+      color: white;
+      width: 100%;
+      border: none;
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-add-cart:hover {
+      opacity: 0.9;
+    }
+
+    .online-badge {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--primary);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="public-header">
+    <div class="public-container public-header-inner">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div class="logo-icon" id="shop-icon-theme">
+          <i data-lucide="store"></i>
+        </div>
+        <div>
+          <h1 id="shop-title" style="font-size:1.35rem; font-weight:800;">Officine</h1>
+          <p style="font-size:0.75rem; color:var(--text-secondary);" id="shop-address">Adresse Pharmacie</p>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:16px;">
+        <span class="online-badge"><i data-lucide="shield-check" style="width:14px; height:14px; vertical-align:middle; margin-right:4px;"></i> Click & Collect Actif</span>
+        <button id="public-theme-btn" class="icon-btn"><i data-lucide="moon"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="public-container">
+    
+    <!-- Hero Area -->
+    <div class="hero-banner" id="shop-hero">
+      <h2 id="shop-banner-title">Votre Pharmacie en Ligne</h2>
+      <p id="shop-banner-text">Réservez vos traitements et récupérez votre panier en officine.</p>
+    </div>
+
+    <!-- Product Grid & Basket -->
+    <div class="public-grid">
+      
+      <!-- Catalog Section -->
+      <div>
+        <h3 style="font-size:1.3rem; font-weight:700; margin-bottom:20px; display:flex; align-items:center; gap:8px;">
+          <i data-lucide="pill" style="color:var(--primary);"></i> Catalogue Disponible
+        </h3>
+        
+        <!-- Search bar -->
+        <div class="search-container">
+          <i data-lucide="search" class="search-icon"></i>
+          <input type="text" id="public-search" class="search-input" placeholder="Rechercher un médicament (Doliprane, Amoxicilline...)...">
+        </div>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap:20px; margin-top:20px;" id="public-catalog-grid">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- Reservation Basket Sidebar -->
+      <div>
+        <div class="public-cart-card">
+          <h3 style="font-size:1.15rem; font-weight:700; border-bottom:1px solid var(--border-color); padding-bottom:12px; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
+            <i data-lucide="shopping-basket" style="color:var(--primary);"></i> Votre Panier
+          </h3>
+
+          <div id="public-cart-list" style="margin-bottom:20px;">
+            <!-- Cart items loaded here -->
+          </div>
+
+          <div style="border-top:1px solid var(--border-color); padding-top:16px; margin-bottom:20px;">
+            <div style="display:flex; justify-content:space-between; font-weight:800; font-size:1.2rem; color:var(--primary);">
+              <span>Total Estimé :</span>
+              <span id="public-cart-total">0.00 DH</span>
+            </div>
+            <p style="font-size:0.75rem; color:var(--text-muted); margin-top:6px;">Le règlement s'effectuera directement en officine lors du retrait.</p>
+          </div>
+
+          <!-- Checkout Form -->
+          <form id="public-checkout-form">
+            <div class="form-group">
+              <label for="client-name">Nom & Prénom</label>
+              <input type="text" id="client-name" class="form-control" placeholder="Entrez votre nom" required>
+            </div>
+            <div class="form-group">
+              <label for="client-phone">Numéro de Téléphone</label>
+              <input type="text" id="client-phone" class="form-control" placeholder="Ex: 0612345678" required>
+            </div>
+            <div class="form-group">
+              <label for="client-prescription">Déposer Ordonnance (Optionnel)</label>
+              <input type="file" id="client-prescription" class="form-control" accept="image/*,.pdf">
+              <small style="color:var(--text-muted); font-size:0.7rem;">Format image ou PDF requis pour les médicaments sous ordonnance.</small>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%; padding:12px; margin-top:10px;" id="btn-submit-order" disabled>
+              <i data-lucide="check-square"></i> Réserver mon panier
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Success confirmation notification modal -->
+  <div class="modal-backdrop" id="success-modal">
+    <div class="modal-content" style="max-width: 440px; text-align: center;">
+      <i data-lucide="check-circle" style="width: 64px; height: 64px; color: var(--primary); margin: 0 auto 16px auto;"></i>
+      <h3 class="modal-title" style="margin-bottom: 10px;">Réservation Confirmée !</h3>
+      <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 24px;" id="success-modal-msg">
+        Votre commande a été transmise à notre officine. Un pharmacien prépare vos médicaments sous peu.
+      </p>
+      <button class="btn btn-primary" onclick="location.reload()" style="width: 100%;">Fermer</button>
+    </div>
+  </div>
+
+  <!-- JS Logic -->
+  <script type="module">
+    import store from './js/store.js';
+
+    let clientCart = [];
+
+    function initClientSite() {
+      renderConfigs();
+      renderCatalog();
+      renderClientCart();
+      setupEvents();
+    }
+
+    function renderConfigs() {
+      const settings = store.getSettings();
+      const webshop = store.getWebshop();
+      
+      // Update browser tab title
+      document.title = `${webshop.siteTitle} - Click & Collect`;
+      
+      // Set titles
+      document.getElementById('shop-title').textContent = webshop.siteTitle;
+      document.getElementById('shop-address').textContent = settings.address;
+      document.getElementById('shop-banner-title').textContent = webshop.siteTitle;
+      document.getElementById('shop-banner-text').textContent = webshop.bannerText;
+
+      // Theme logic sync
+      document.documentElement.setAttribute('data-theme', settings.theme);
+      
+      const themeBtn = document.getElementById('public-theme-btn');
+      themeBtn.innerHTML = settings.theme === 'dark' 
+        ? `<i data-lucide="sun"></i>`
+        : `<i data-lucide="moon"></i>`;
+      
+      // Inject primary color accent dynamically
+      document.documentElement.style.setProperty('--primary', webshop.siteAccent);
+      document.documentElement.style.setProperty('--primary-glow', `${webshop.siteAccent}20`);
+
+      lucide.createIcons();
+    }
+
+    function setupEvents() {
+      // Toggle Theme
+      document.getElementById('public-theme-btn').onclick = () => {
+        const currentSettings = store.getSettings();
+        const nextTheme = currentSettings.theme === 'dark' ? 'light' : 'dark';
+        store.updateTheme(nextTheme);
+        renderConfigs();
+      };
+
+      // Search catalog
+      document.getElementById('public-search').oninput = (e) => {
+        renderCatalog(e.target.value);
+      };
+
+      // Handle checkout submission
+      document.getElementById('public-checkout-form').onsubmit = (e) => {
+        e.preventDefault();
+        
+        const name = document.getElementById('client-name').value;
+        const phone = document.getElementById('client-phone').value;
+        const fileInput = document.getElementById('client-prescription');
+        
+        // Add reservation in store
+        const res = store.addReservation({
+          patientName: name,
+          patientPhone: phone,
+          items: clientCart.map(item => ({ medicationId: item.medicationId, quantity: item.quantity, price: item.price })),
+          total: clientCart.reduce((acc, curr) => acc + (curr.price * curr.quantity), 0),
+          prescriptionUploaded: fileInput.files.length > 0
+        });
+
+        const msg = `Votre réservation N° ${res.id} a été enregistrée avec succès. Notre équipe prépare vos produits. Présentez-vous au comptoir muni du numéro de réservation.`;
+        document.getElementById('success-modal-msg').textContent = msg;
+        document.getElementById('success-modal').classList.add('active');
+      };
+    }
+
+    function renderCatalog(filter = '') {
+      const grid = document.getElementById('public-catalog-grid');
+      grid.innerHTML = '';
+
+      const medications = store.getMedications();
+      const query = filter.toLowerCase();
+
+      const filtered = medications.filter(m => 
+        m.name.toLowerCase().includes(query) ||
+        m.molecule.toLowerCase().includes(query) ||
+        m.category.toLowerCase().includes(query)
+      );
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:30px; color:var(--text-muted);">Aucun article disponible.</p>';
+        return;
+      }
+
+      filtered.forEach(med => {
+        const div = document.createElement('div');
+        div.className = 'public-prod-card';
+
+        const isOut = med.stock === 0;
+
+        div.innerHTML = `
+          <span class="prod-category">${med.category}</span>
+          <span style="font-size:1.05rem; font-weight:700; color:var(--text-primary);">${med.name}</span>
+          <span style="font-size:0.75rem; color:var(--text-muted);">Molécule: ${med.molecule}</span>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+            <span style="font-size:1.15rem; font-weight:800; color:var(--primary);">${med.price.toFixed(2)} DH</span>
+            <span style="font-size:0.75rem; font-weight:600; color:${isOut ? 'var(--danger)' : 'var(--primary)'};">
+              ${isOut ? 'Rupture de Stock' : 'Disponible en Officine'}
+            </span>
+          </div>
+          <button class="btn-add-cart" data-id="${med.id}" ${isOut ? 'disabled style="background:var(--text-muted); cursor:not-allowed;"' : ''}>
+            <i data-lucide="plus"></i> Réserver
+          </button>
+        `;
+
+        if (!isOut) {
+          div.querySelector('.btn-add-cart').onclick = () => {
+            addToClientCart(med);
+          };
+        }
+
+        grid.appendChild(div);
+      });
+
+      lucide.createIcons();
+    }
+
+    function addToClientCart(med) {
+      const existing = clientCart.find(i => i.medicationId === med.id);
+      if (existing) {
+        if (existing.quantity >= med.stock) {
+          alert(`Désolé, seulement ${med.stock} pièces de ce produit sont disponibles.`);
+          return;
+        }
+        existing.quantity++;
+      } else {
+        clientCart.push({
+          medicationId: med.id,
+          name: med.name,
+          price: med.price,
+          quantity: 1,
+          maxStock: med.stock
+        });
+      }
+      renderClientCart();
+    }
+
+    function changeClientQty(medId, delta) {
+      const item = clientCart.find(i => i.medicationId === medId);
+      if (!item) return;
+
+      item.quantity += delta;
+      if (item.quantity <= 0) {
+        clientCart = clientCart.filter(i => i.medicationId !== medId);
+      } else if (item.quantity > item.maxStock) {
+        alert(`Stock disponible maximum atteint (${item.maxStock}).`);
+        item.quantity = item.maxStock;
+      }
+      renderClientCart();
+    }
+
+    function renderClientCart() {
+      const container = document.getElementById('public-cart-list');
+      container.innerHTML = '';
+
+      if (clientCart.length === 0) {
+        container.innerHTML = '<p style="text-align:center; padding:20px; color:var(--text-muted);">Votre panier est vide.</p>';
+        document.getElementById('btn-submit-order').disabled = true;
+        document.getElementById('public-cart-total').textContent = '0.00 DH';
+        return;
+      }
+
+      document.getElementById('btn-submit-order').disabled = false;
+
+      let total = 0;
+      clientCart.forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          <div class="cart-item-info">
+            <div class="cart-item-name" style="font-size:0.85rem;">${item.name}</div>
+            <div style="font-size:0.75rem; color:var(--text-muted);">${item.price.toFixed(2)} DH x ${item.quantity}</div>
+          </div>
+          <div class="cart-item-actions">
+            <div class="qty-control" style="padding: 2px;">
+              <button class="qty-btn minus-btn" data-id="${item.medicationId}">-</button>
+              <span class="qty-val" style="font-size:0.8rem;">${item.quantity}</span>
+              <button class="qty-btn plus-btn" data-id="${item.medicationId}">+</button>
+            </div>
+          </div>
+        `;
+
+        div.querySelector('.minus-btn').onclick = () => changeClientQty(item.medicationId, -1);
+        div.querySelector('.plus-btn').onclick = () => changeClientQty(item.medicationId, 1);
+
+        container.appendChild(div);
+      });
+
+      document.getElementById('public-cart-total').textContent = `${total.toFixed(2)} DH`;
+    }
+
+    document.addEventListener('DOMContentLoaded', initClientSite);
+  </script>
+</body>
+</html>

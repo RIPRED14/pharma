@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PharmaERP - Solution Intelligente Officine</title>
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+  
+  <!-- External Libraries (ChartJS & Lucide Icons) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="logo-container">
+        <div class="logo-icon">
+          <i data-lucide="activity"></i>
+        </div>
+        <span class="logo-text">PharmaERP Pro</span>
+      </div>
+      
+      <ul class="nav-links">
+        <li class="nav-item active" data-view="dashboard">
+          <a><i data-lucide="layout-dashboard"></i> Tableau de bord</a>
+        </li>
+        <li class="nav-item" data-view="pos">
+          <a><i data-lucide="shopping-cart"></i> Caisse (POS)</a>
+        </li>
+        <li class="nav-item" data-view="inventory">
+          <a><i data-lucide="pill"></i> Catalogue & Stocks</a>
+        </li>
+        <li class="nav-item" data-view="patients">
+          <a><i data-lucide="users"></i> Fichier Patients</a>
+        </li>
+        <li class="nav-item" data-view="suppliers">
+          <a><i data-lucide="truck"></i> Fournisseurs</a>
+        </li>
+        <li class="nav-item" data-view="reports">
+          <a><i data-lucide="bar-chart-3"></i> Analyses & Rapports</a>
+        </li>
+        <li class="nav-item" data-view="webshop">
+          <a><i data-lucide="globe"></i> Vitrine Web / Site Client</a>
+        </li>
+      </ul>
+      
+      <div class="sidebar-footer">
+        <button id="theme-toggle" class="theme-toggle-btn">
+          <i data-lucide="moon"></i> Mode Sombre
+        </button>
+        <div class="user-profile">
+          <div class="avatar">PH</div>
+          <div class="user-info">
+            <span class="user-name" id="profile-pharmacy-name">Officine Centrale</span>
+            <span class="user-role">Pharmacien Titulaire</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Panel -->
+    <main class="main-content">
+      
+      <!-- Top Bar Header -->
+      <header class="top-header">
+        <div class="page-title-container">
+          <h1 id="page-current-title">Tableau de Bord Exhaustif</h1>
+        </div>
+        <div class="header-actions">
+          <div class="alert-badge-container" id="global-notifications-trigger">
+            <button class="icon-btn">
+              <i data-lucide="bell"></i>
+            </button>
+            <span class="notification-count" id="notification-badge" style="display: none;">0</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- View Containers -->
+      <div class="view-container">
+
+        <!-- 1. DASHBOARD VIEW -->
+        <section id="dashboard-view" class="view-section active">
+          <!-- KPIs Row -->
+          <div class="grid-kpis">
+            <div class="kpi-card">
+              <div class="kpi-details">
+                <span class="kpi-label">Ventes du jour</span>
+                <span class="kpi-value" id="kpi-sales-today">0.00 DH</span>
+                <span class="kpi-trend trend-up"><i data-lucide="trending-up"></i> +12.4% vs hier</span>
+              </div>
+              <div class="kpi-icon-container emerald">
+                <i data-lucide="dollar-sign"></i>
+              </div>
+            </div>
+            
+            <div class="kpi-card">
+              <div class="kpi-details">
+                <span class="kpi-label">Ordonnances traitées</span>
+                <span class="kpi-value" id="kpi-prescriptions">0</span>
+                <span class="kpi-trend trend-up"><i data-lucide="trending-up"></i> +8.1%</span>
+              </div>
+              <div class="kpi-icon-container blue">
+                <i data-lucide="clipboard-list"></i>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-details">
+                <span class="kpi-label">Stocks Critiques</span>
+                <span class="kpi-value" id="kpi-low-stock">0</span>
+                <span class="kpi-trend trend-down"><i data-lucide="trending-down"></i> Seuil dépassé</span>
+              </div>
+              <div class="kpi-icon-container warning">
+                <i data-lucide="package-2"></i>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-details">
+                <span class="kpi-label">Alertes Actives</span>
+                <span class="kpi-value" id="kpi-alerts-active">0</span>
+                <span class="kpi-trend" style="color: var(--text-muted);">Péremption & Rupture</span>
+              </div>
+              <div class="kpi-icon-container danger">
+                <i data-lucide="alert-octagon"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dashboard Charts -->
+          <div class="dashboard-grid">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title"><i data-lucide="trending-up"></i> Évolution des Ventes (7 derniers jours)</h3>
+              </div>
+              <div class="chart-wrapper">
+                <canvas id="salesTrendChart"></canvas>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title"><i data-lucide="pie-chart"></i> Distribution par Catégorie</h3>
+              </div>
+              <div class="chart-wrapper">
+                <canvas id="categoryDistributionChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alerts list & Quick links -->
+          <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px;">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title" style="color: var(--danger);"><i data-lucide="bell-ring"></i> Alertes d'Expirations & Ruptures Critiques</h3>
+              </div>
+              <div class="alert-list" id="dashboard-alerts-list">
+                <!-- Injected dynamically -->
+              </div>
+            </div>
+
+            <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <h3 class="card-title"><i data-lucide="zap"></i> Actions Raccourcis Officine</h3>
+                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 6px;">Lancez instantanément des opérations de comptoir ou de catalogue.</p>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 24px;">
+                <button class="btn btn-primary" id="shortcut-sale" style="width: 100%; justify-content: flex-start;">
+                  <i data-lucide="shopping-cart"></i> Nouvelle Vente Comptoir
+                </button>
+                <button class="btn btn-secondary" id="shortcut-add-med" style="width: 100%; justify-content: flex-start;">
+                  <i data-lucide="plus"></i> Enregistrer Nouveau Médicament
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. POINT DE VENTE (POS) VIEW -->
+        <section id="pos-view" class="view-section">
+          <div class="pos-grid">
+            
+            <!-- Product Finder Panel -->
+            <div class="pos-products">
+              <div class="search-container">
+                <i data-lucide="search" class="search-icon"></i>
+                <input type="text" id="pos-search" class="search-input" placeholder="Rechercher par médicament, molécule, catégorie ou code barres...">
+              </div>
+              <div class="products-scroll">
+                <div class="products-grid" id="pos-products-grid">
+                  <!-- Products card grid injected here -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Cart Receipt Panel -->
+            <div class="pos-cart">
+              <div class="card" style="height: 100%; display: flex; flex-direction: column; margin-bottom: 0;">
+                <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                  <h3 class="card-title"><i data-lucide="shopping-bag"></i> Panier Actif</h3>
+                  <button class="btn btn-secondary" id="clear-cart-btn" style="padding: 6px 12px; font-size: 0.8rem;">Vider</button>
+                </div>
+                
+                <div class="cart-items-wrapper" id="cart-items-list">
+                  <!-- Items loaded here -->
+                </div>
+
+                <!-- Patient coverage details -->
+                <div style="margin-bottom: 16px;">
+                  <label for="pos-patient-select" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary);">Dossier Patient (Tiers-Payant / Mutuelle)</label>
+                  <select id="pos-patient-select" class="tiers-payant-select">
+                    <!-- Dropdown options -->
+                  </select>
+                </div>
+
+                <div class="cart-totals">
+                  <div class="totals-row">
+                    <span>Sous-total:</span>
+                    <span id="cart-subtotal">0.00 DH</span>
+                  </div>
+                  <div class="totals-row">
+                    <span>Prise en charge Mutuelle:</span>
+                    <span id="cart-insurance" style="color: var(--accent);">0.00 DH (0%)</span>
+                  </div>
+                  <div class="totals-row grand-total">
+                    <span>À Payer (Client):</span>
+                    <span id="cart-total">0.00 DH</span>
+                  </div>
+                </div>
+
+                <button class="btn btn-primary" id="checkout-btn" style="width: 100%; margin-top: 16px; padding: 14px;" disabled>
+                  <i data-lucide="check-circle-2"></i> Finaliser et Éditer Facture
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- 3. INVENTORY VIEW -->
+        <section id="inventory-view" class="view-section">
+          <div class="card">
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+              <div class="filters-left">
+                <input type="text" id="inventory-search" class="form-control" style="width: 260px;" placeholder="Recherche rapide...">
+                <select id="inventory-filter-category" class="filter-select">
+                  <option value="">Toutes les catégories</option>
+                </select>
+                <select id="inventory-filter-stock" class="filter-select">
+                  <option value="">Tous les stocks</option>
+                  <option value="normal">Normal</option>
+                  <option value="low">Stock critique</option>
+                  <option value="out">Rupture de stock</option>
+                </select>
+              </div>
+              <button class="btn btn-primary" id="add-medication-btn">
+                <i data-lucide="plus"></i> Nouveau Médicament
+              </button>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Désignation</th>
+                    <th>Molécule</th>
+                    <th>Catégorie</th>
+                    <th>Stock Actuel</th>
+                    <th>Prix Achat</th>
+                    <th>Prix Public (PPV)</th>
+                    <th>Péremption</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="inventory-tbody">
+                  <!-- Data rows injection -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. PATIENTS VIEW -->
+        <section id="patients-view" class="view-section">
+          <div class="card">
+            <div class="filter-bar">
+              <div class="filters-left">
+                <input type="text" id="patient-search" class="form-control" style="width: 280px;" placeholder="Rechercher par nom, téléphone, mutuelle...">
+              </div>
+              <button class="btn btn-primary" id="add-patient-btn">
+                <i data-lucide="user-plus"></i> Nouveau Fiche Patient
+              </button>
+            </div>
+
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Nom Complet</th>
+                    <th>Téléphone</th>
+                    <th>Affections Chroniques</th>
+                    <th>Régime Assurance</th>
+                    <th>Historique D'achats</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="patients-tbody">
+                  <!-- Loaded dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. SUPPLIERS VIEW -->
+        <section id="suppliers-view" class="view-section">
+          <!-- Quick alerts replenishment indicators -->
+          <div class="card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:24px;">
+            <div id="low-stock-count-label">
+              <!-- Replenish alert text -->
+            </div>
+            <button class="btn btn-primary" id="generate-order-btn" disabled>
+              <i data-lucide="file-text"></i> Générer Commande de Réapprovisionnement
+            </button>
+          </div>
+
+          <div class="card">
+            <div class="filter-bar">
+              <div class="filters-left">
+                <input type="text" id="supplier-search" class="form-control" style="width: 280px;" placeholder="Rechercher fournisseur...">
+              </div>
+              <button class="btn btn-secondary" id="add-supplier-btn">
+                <i data-lucide="plus"></i> Nouveau Fournisseur
+              </button>
+            </div>
+
+            <div class="table-responsive">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>Raison Sociale</th>
+                    <th>Contact</th>
+                    <th>Email</th>
+                    <th>Téléphone</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="suppliers-tbody">
+                  <!-- Injected here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. ANALYTICS & REPORTS VIEW -->
+        <section id="reports-view" class="view-section">
+          <!-- Financial metrics -->
+          <div class="grid-kpis">
+            <div class="kpi-card">
+              <div class="kpi-details">
+                <span class="kpi-label">CA Cumulé</span>
+                <span class="kpi-value" id="rep-kpi-total-sales">0.00 DH</span>
+                <span class="kpi-trend" style="color:var(--text-muted);">Période active</span>
+              </div>
+              <div class="kpi-icon-container blue">
+                <i data-lucide="line-chart"></i>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-details">
+                <span class="kpi-label">Marge Estimée (30%)</span>
+                <span class="kpi-value" id="rep-kpi-profit">0.00 DH</span>
+                <span class="kpi-trend trend-up"><i data-lucide="trending-up"></i> Rentabilité stable</span>
+              </div>
+              <div class="kpi-icon-container emerald">
+                <i data-lucide="wallet"></i>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-details">
+                <span class="kpi-label">TVA Collectée (7%)</span>
+                <span class="kpi-value" id="rep-kpi-taxes">0.00 DH</span>
+                <span class="kpi-trend" style="color:var(--text-muted);">Règlement trimestriel</span>
+              </div>
+              <div class="kpi-icon-container warning">
+                <i data-lucide="percent"></i>
+              </div>
+            </div>
+
+            <div class="kpi-card">
+              <div class="kpi-details">
+                <span class="kpi-label">Panier Moyen</span>
+                <span class="kpi-value" id="rep-kpi-average">0.00 DH</span>
+                <span class="kpi-trend trend-up"><i data-lucide="trending-up"></i> Par transaction</span>
+              </div>
+              <div class="kpi-icon-container danger">
+                <i data-lucide="activity"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts -->
+          <div class="dashboard-grid">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title"><i data-lucide="bar-chart-3"></i> Comparatif Chiffre d'Affaires vs Marge Bénéficiaire</h3>
+              </div>
+              <div class="chart-wrapper">
+                <canvas id="financeComparisonChart"></canvas>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title"><i data-lucide="pie-chart"></i> Mode de Remboursement</h3>
+              </div>
+              <div class="chart-wrapper">
+                <canvas id="paymentShareChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent transactions list -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title"><i data-lucide="history"></i> Journal Complet des Transactions Comptoir</h3>
+            </div>
+            <div class="table-responsive" style="margin-top:16px;">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>N° Vente</th>
+                    <th>Date & Heure</th>
+                    <th>Client (Patient)</th>
+                    <th>Total Brut</th>
+                    <th>Part Patient</th>
+                    <th>Tiers-Payant</th>
+                  </tr>
+                </thead>
+                <tbody id="reports-sales-tbody">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. WEBSHOP VIEW -->
+        <section id="webshop-view" class="view-section">
+          <div class="dashboard-grid">
+            <!-- Left panel: Webshop Settings Form -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title"><i data-lucide="globe"></i> Paramètres du Site Client Public</h3>
+              </div>
+              <form id="webshop-config-form" style="margin-top: 16px;">
+                <div class="form-group">
+                  <label for="webshop-title">Nom de l'Officine en Ligne</label>
+                  <input type="text" id="webshop-title" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label for="webshop-banner">Message d'Accueil (Bannière)</label>
+                  <textarea id="webshop-banner" class="form-control" rows="3" required style="resize:none; font-family:inherit;"></textarea>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="webshop-accent">Couleur d'accentuation du site</label>
+                    <select id="webshop-accent" class="form-control" required>
+                      <option value="#10b981">Émeraude (Vert Médical)</option>
+                      <option value="#3b82f6">Bleu Sapphire</option>
+                      <option value="#ef4444">Rouge Clinique</option>
+                      <option value="#f59e0b">Or Lumineux</option>
+                    </select>
+                  </div>
+                  <div class="form-group" style="justify-content: center;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; margin-top:20px;">
+                      <input type="checkbox" id="webshop-online" style="width:18px; height:18px; accent-color:var(--primary);">
+                      <span>Activer le Click & Collect</span>
+                    </label>
+                  </div>
+                </div>
+                
+                <div style="background:var(--bg-input); border:1px solid var(--border-color); padding:16px; border-radius:var(--radius-sm); margin-bottom:20px; font-size:0.85rem;">
+                  <span>Lien public client : </span>
+                  <a id="webshop-preview-url" target="_blank" style="color:var(--accent); text-decoration:none; font-weight:600;"></a>
+                </div>
+
+                <div style="display:flex; gap:12px;">
+                  <button type="submit" class="btn btn-primary" style="flex-grow:1;">Enregistrer</button>
+                  <button type="button" class="btn btn-secondary" id="open-webshop-btn"><i data-lucide="external-link"></i> Visiter le site</button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Right panel: Quick info -->
+            <div class="card" style="display:flex; flex-direction:column; justify-content:space-between;">
+              <div>
+                <h3 class="card-title"><i data-lucide="info"></i> Qu'est-ce que le Site Client ?</h3>
+                <div style="font-size:0.85rem; color:var(--text-secondary); line-height:1.6; margin-top:12px; display:flex; flex-direction:column; gap:10px;">
+                  <p>Il s'agit d'une page publique accessible par vos clients pour commander en Click & Collect.</p>
+                  <p><strong>Avantages :</strong></p>
+                  <ul style="padding-left:20px;">
+                    <li>Synchronisation automatique des stocks réels.</li>
+                    <li>Possibilité d'envoyer une photo d'ordonnance.</li>
+                    <li>Réservation préparée en moins de 30 min.</li>
+                  </ul>
+                </div>
+              </div>
+              <div style="text-align:center; padding:16px; background:var(--primary-glow); border-radius:var(--radius-md); border:1px solid rgba(16,185,129,0.15); margin-top:20px;">
+                <p style="font-size:0.8rem; font-weight:600; color:var(--primary);">Statut de la Vitrine : CONNECTÉ</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom: List of Web reservations -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title"><i data-lucide="inbox"></i> Demandes de Réservations en Ligne (Click & Collect)</h3>
+            </div>
+            <div class="table-responsive" style="margin-top:16px;">
+              <table class="custom-table">
+                <thead>
+                  <tr>
+                    <th>N° Commande</th>
+                    <th>Date d'envoi</th>
+                    <th>Client / Tél</th>
+                    <th>Montant total</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="reservations-tbody">
+                  <!-- Injected by js/webshop.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ================= MODALS REGISTRY ================= -->
+
+  <!-- 1. Medication Add/Edit Modal -->
+  <div class="modal-backdrop" id="medication-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="med-modal-title">Ajouter un Médicament</h3>
+        <button class="modal-close" id="close-med-modal">&times;</button>
+      </div>
+      <form id="medication-form">
+        <input type="hidden" id="med-id">
+        <div class="form-group">
+          <label for="med-name">Désignation du médicament</label>
+          <input type="text" id="med-name" class="form-control" placeholder="Ex: Doliprane 1000mg" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="med-molecule">Molécule active</label>
+            <input type="text" id="med-molecule" class="form-control" placeholder="Ex: Paracétamol" required>
+          </div>
+          <div class="form-group">
+            <label for="med-category">Catégorie thérapeutique</label>
+            <input type="text" id="med-category" class="form-control" placeholder="Ex: Analgésique" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="med-stock">Stock Initial</label>
+            <input type="number" id="med-stock" class="form-control" min="0" required>
+          </div>
+          <div class="form-group">
+            <label for="med-min-stock">Seuil Alerte Stock</label>
+            <input type="number" id="med-min-stock" class="form-control" min="0" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="med-purchase-price">Prix d'Achat Grossiste (DH)</label>
+            <input type="number" id="med-purchase-price" class="form-control" step="0.01" min="0" required>
+          </div>
+          <div class="form-group">
+            <label for="med-price">Prix Public de Vente PPV (DH)</label>
+            <input type="number" id="med-price" class="form-control" step="0.01" min="0" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="med-expiry">Date de Péremption</label>
+            <input type="date" id="med-expiry" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="med-batch">Numéro Lot</label>
+            <input type="text" id="med-batch" class="form-control" placeholder="Ex: BT-9022" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="med-code">Code Barres (Code C.I.P)</label>
+            <input type="text" id="med-code" class="form-control" placeholder="Ex: 34009..." required>
+          </div>
+          <div class="form-group">
+            <!-- empty grid placeholder -->
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 12px; padding: 12px;">
+          Enregistrer dans le Catalogue
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. Patient Add/Edit Modal -->
+  <div class="modal-backdrop" id="patient-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="patient-modal-title">Ajouter une fiche Patient</h3>
+        <button class="modal-close" id="close-patient-modal">&times;</button>
+      </div>
+      <form id="patient-form">
+        <input type="hidden" id="patient-id">
+        <div class="form-group">
+          <label for="patient-name">Nom complet du patient</label>
+          <input type="text" id="patient-name" class="form-control" placeholder="Ex: Jean Dupont" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="patient-phone">Téléphone</label>
+            <input type="text" id="patient-phone" class="form-control" placeholder="Ex: 06..." required>
+          </div>
+          <div class="form-group">
+            <label for="patient-email">Adresse Email</label>
+            <input type="email" id="patient-email" class="form-control" placeholder="Ex: client@email.com">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="patient-disease">Affections Longue Durée (Maladies Chroniques)</label>
+          <input type="text" id="patient-disease" class="form-control" placeholder="Ex: Diabète, Hypertension, Asthme (ou Aucune)">
+        </div>
+        <div class="form-group">
+          <label for="patient-mutuelle">Régime Assurance / Tiers-Payant</label>
+          <select id="patient-mutuelle" class="form-control" required>
+            <option value="Aucun">Aucune prise en charge (100% à la charge du client)</option>
+            <option value="CNSS (80%)">CNSS (Remboursement de 80%)</option>
+            <option value="CNOPS (90%)">CNOPS (Remboursement de 90%)</option>
+            <option value="MGEN (70%)">MGEN (Remboursement de 70%)</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 12px; padding: 12px;">
+          Enregistrer le Dossier Patient
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. Supplier Add/Edit Modal -->
+  <div class="modal-backdrop" id="supplier-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="supplier-modal-title">Ajouter un Fournisseur</h3>
+        <button class="modal-close" id="close-supplier-modal">&times;</button>
+      </div>
+      <form id="supplier-form">
+        <input type="hidden" id="supplier-id">
+        <div class="form-group">
+          <label for="supplier-name">Raison Sociale / Nom Fournisseur</label>
+          <input type="text" id="supplier-name" class="form-control" placeholder="Ex: Cooper Maroc" required>
+        </div>
+        <div class="form-group">
+          <label for="supplier-contact">Responsable Commercial</label>
+          <input type="text" id="supplier-contact" class="form-control" placeholder="Ex: Salma Alami" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="supplier-email">Adresse Email Commandes</label>
+            <input type="email" id="supplier-email" class="form-control" placeholder="Ex: commandes@fournisseur.com" required>
+          </div>
+          <div class="form-group">
+            <label for="supplier-phone">Téléphone Service Client</label>
+            <input type="text" id="supplier-phone" class="form-control" placeholder="Ex: 0522..." required>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 12px; padding: 12px;">
+          Enregistrer le Fournisseur
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. POS Receipt Modal -->
+  <div class="modal-backdrop" id="invoice-modal">
+    <div class="modal-content" style="max-width: 420px; padding: 20px;">
+      <div class="modal-header" style="margin-bottom: 12px;">
+        <h3 class="modal-title">Vente Enregistrée !</h3>
+        <button class="modal-close" id="close-invoice-modal">&times;</button>
+      </div>
+      <div id="virtual-invoice-ticket">
+        <!-- virtual receipt goes here -->
+      </div>
+      <button class="btn btn-primary" onclick="window.print()" style="width: 100%; margin-top: 16px;">
+        <i data-lucide="printer"></i> Imprimer Ticket de Caisse
+      </button>
+    </div>
+  </div>
+
+  <!-- 5. Order Replenishment Modal -->
+  <div class="modal-backdrop" id="order-modal">
+    <div class="modal-content" style="max-width: 550px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Bon de Commande Approvisionnement</h3>
+        <button class="modal-close" id="close-order-modal">&times;</button>
+      </div>
+      <div class="form-group" style="margin-bottom: 20px;">
+        <label for="order-supplier-select">Destinataire (Sélectionner Fournisseur)</label>
+        <select id="order-supplier-select" class="form-control">
+          <!-- Supplier list options -->
+        </select>
+      </div>
+      <div id="order-ticket-container">
+        <!-- Rendered bon de commande -->
+      </div>
+      <button class="btn btn-primary" onclick="alert('Commande transmise électroniquement au grossiste répartiteur avec succès.')" style="width: 100%; margin-top: 16px;">
+        <i data-lucide="send"></i> Envoyer Commande au Fournisseur
+      </button>
+    </div>
+  </div>
+
+  <!-- Main JS Bootstrapper Module -->
+  <script type="module" src="js/app.js"></script>
+
+</body>
+</html>
