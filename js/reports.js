@@ -96,8 +96,8 @@ function renderSalesHistoryTable() {
 
 function renderReportCharts() {
   const sales = store.getSales();
-  const theme = document.documentElement.getAttribute('data-theme') || 'dark';
-  const textColor = theme === 'dark' ? '#9ca3af' : '#475569';
+  const theme = document.documentElement.getAttribute('data-theme') || 'light';
+  const textColor = theme === 'dark' ? '#9ca3af' : '#64748B';
   const gridColor = theme === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
 
   // 1. Finance comparison chart (Revenues vs Profit)
@@ -130,13 +130,13 @@ function renderReportCharts() {
         {
           label: 'Chiffre d\'Affaires (DH)',
           data: revenues,
-          backgroundColor: '#3b82f6',
+          backgroundColor: '#1E88E5',
           borderRadius: 4
         },
         {
           label: 'Marge Bénéficiaire (DH)',
           data: profits,
-          backgroundColor: '#10b981',
+          backgroundColor: '#0F9D7A',
           borderRadius: 4
         }
       ]
@@ -147,17 +147,17 @@ function renderReportCharts() {
       scales: {
         x: {
           grid: { color: gridColor },
-          ticks: { color: textColor, font: { family: 'Outfit' } }
+          ticks: { color: textColor, font: { family: 'Inter' } }
         },
         y: {
           grid: { color: gridColor },
-          ticks: { color: textColor, font: { family: 'Outfit' } },
+          ticks: { color: textColor, font: { family: 'Inter' } },
           beginAtZero: true
         }
       },
       plugins: {
         legend: {
-          labels: { color: textColor, font: { family: 'Outfit' } }
+          labels: { color: textColor, font: { family: 'Inter' } }
         }
       }
     }
@@ -175,7 +175,7 @@ function renderReportCharts() {
       labels: ['Part Patients (Direct)', 'Tiers-Payant (Mutuelles)'],
       datasets: [{
         data: [totalPatientPay, totalMutuellePay],
-        backgroundColor: ['#10b981', '#3b82f6'],
+        backgroundColor: ['#1CC98A', '#1E88E5'],
         borderWidth: 0
       }]
     },
@@ -187,7 +187,7 @@ function renderReportCharts() {
           position: 'bottom',
           labels: {
             color: textColor,
-            font: { family: 'Outfit', size: 12 }
+            font: { family: 'Inter', size: 12 }
           }
         }
       }

@@ -112,8 +112,8 @@ function renderCharts() {
     dailyTotals.push(total);
   }
 
-  const theme = document.documentElement.getAttribute('data-theme') || 'dark';
-  const textColor = theme === 'dark' ? '#9ca3af' : '#475569';
+  const theme = document.documentElement.getAttribute('data-theme') || 'light';
+  const textColor = theme === 'dark' ? '#9ca3af' : '#64748B';
   const gridColor = theme === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
 
   salesChart = new Chart(ctxSales, {
@@ -123,12 +123,12 @@ function renderCharts() {
       datasets: [{
         label: 'Ventes (DH)',
         data: dailyTotals,
-        borderColor: '#10b981',
-        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+        borderColor: '#0F9D7A',
+        backgroundColor: 'rgba(15, 157, 122, 0.08)',
         borderWidth: 3,
         fill: true,
         tension: 0.4,
-        pointBackgroundColor: '#10b981',
+        pointBackgroundColor: '#0F9D7A',
         pointRadius: 4
       }]
     },
@@ -141,11 +141,11 @@ function renderCharts() {
       scales: {
         x: {
           grid: { color: gridColor },
-          ticks: { color: textColor, font: { family: 'Outfit' } }
+          ticks: { color: textColor, font: { family: 'Inter' } }
         },
         y: {
           grid: { color: gridColor },
-          ticks: { color: textColor, font: { family: 'Outfit' } },
+          ticks: { color: textColor, font: { family: 'Inter' } },
           beginAtZero: true
         }
       }
@@ -171,13 +171,13 @@ function renderCharts() {
       datasets: [{
         data: catData,
         backgroundColor: [
-          '#10b981',
-          '#3b82f6',
-          '#f59e0b',
-          '#ef4444',
+          '#0F9D7A',
+          '#1E88E5',
+          '#1CC98A',
+          '#F59E0B',
+          '#EF4444',
           '#8b5cf6',
-          '#ec4899',
-          '#06b6d4'
+          '#ec4899'
         ],
         borderWidth: 0
       }]
@@ -190,7 +190,7 @@ function renderCharts() {
           position: 'right',
           labels: {
             color: textColor,
-            font: { family: 'Outfit', size: 11 }
+            font: { family: 'Inter', size: 11 }
           }
         }
       },

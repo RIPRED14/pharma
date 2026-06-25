@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="dark">
+<html lang="fr" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PharmaERP - Solution Intelligente Officine</title>
+  <title>PHARMATECH - Solution Intelligente Officine</title>
   
   <!-- CSS Stylesheet -->
   <link rel="stylesheet" href="css/styles.css">
@@ -11,6 +11,13 @@
   <!-- External Libraries (ChartJS & Lucide Icons) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Enforce authentication -->
+  <script>
+    if (sessionStorage.getItem('pharma_authenticated') !== 'true' && localStorage.getItem('pharma_authenticated') !== 'true') {
+      window.location.href = 'login.html';
+    }
+  </script>
 </head>
 <body>
 
@@ -19,33 +26,63 @@
     <!-- Sidebar Navigation -->
     <aside class="sidebar">
       <div class="logo-container">
-        <div class="logo-icon">
+        <div class="logo-icon" style="background:#FFFFFF; color:#0F9D7A;">
           <i data-lucide="activity"></i>
         </div>
-        <span class="logo-text">PharmaERP Pro</span>
+        <div>
+          <span class="logo-text" style="display: block; line-height: 1.1; color:#FFFFFF;">PHARMATECH</span>
+          <span style="font-size: 0.65rem; color: rgba(255,255,255,0.6); font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;">ERP Pharmacie</span>
+        </div>
       </div>
       
       <ul class="nav-links">
         <li class="nav-item active" data-view="dashboard">
           <a><i data-lucide="layout-dashboard"></i> Tableau de bord</a>
         </li>
+        
+        <li class="sidebar-header">Gestion</li>
         <li class="nav-item" data-view="pos">
-          <a><i data-lucide="shopping-cart"></i> Caisse (POS)</a>
-        </li>
-        <li class="nav-item" data-view="inventory">
-          <a><i data-lucide="pill"></i> Catalogue & Stocks</a>
+          <a><i data-lucide="shopping-cart"></i> Ventes</a>
         </li>
         <li class="nav-item" data-view="patients">
-          <a><i data-lucide="users"></i> Fichier Patients</a>
+          <a><i data-lucide="clipboard-list"></i> Ordonnances</a>
+        </li>
+        <li class="nav-item" data-view="inventory">
+          <a><i data-lucide="archive"></i> Stocks</a>
+        </li>
+        <li class="nav-item" data-view="inventory">
+          <a><i data-lucide="pill"></i> Produits</a>
+        </li>
+        <li class="nav-item" data-view="suppliers">
+          <a><i data-lucide="shopping-bag"></i> Achats</a>
         </li>
         <li class="nav-item" data-view="suppliers">
           <a><i data-lucide="truck"></i> Fournisseurs</a>
         </li>
+        <li class="nav-item" data-view="patients">
+          <a><i data-lucide="users"></i> Clients</a>
+        </li>
+        
+        <li class="sidebar-header">Analyses & Finance</li>
         <li class="nav-item" data-view="reports">
-          <a><i data-lucide="bar-chart-3"></i> Analyses & Rapports</a>
+          <a><i data-lucide="credit-card"></i> Finance</a>
+        </li>
+        <li class="nav-item" data-view="reports">
+          <a><i data-lucide="file-text"></i> Rapports</a>
+        </li>
+        <li class="nav-item" data-view="reports">
+          <a><i data-lucide="bar-chart-2"></i> Statistiques</a>
+        </li>
+        
+        <li class="sidebar-header">Paramètres</li>
+        <li class="nav-item" data-view="webshop">
+          <a><i data-lucide="git-branch"></i> Branches</a>
         </li>
         <li class="nav-item" data-view="webshop">
-          <a><i data-lucide="globe"></i> Vitrine Web / Site Client</a>
+          <a><i data-lucide="shield"></i> Utilisateurs</a>
+        </li>
+        <li class="nav-item" data-view="webshop">
+          <a><i data-lucide="settings"></i> Paramètres</a>
         </li>
       </ul>
       
@@ -53,12 +90,17 @@
         <button id="theme-toggle" class="theme-toggle-btn">
           <i data-lucide="moon"></i> Mode Sombre
         </button>
-        <div class="user-profile">
-          <div class="avatar">PH</div>
-          <div class="user-info">
-            <span class="user-name" id="profile-pharmacy-name">Officine Centrale</span>
-            <span class="user-role">Pharmacien Titulaire</span>
+        <div class="user-profile" style="position: relative; display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="avatar" style="background: rgba(255, 255, 255, 0.2); color: white; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.8rem;">PT</div>
+            <div class="user-info">
+              <span class="user-name" id="profile-pharmacy-name" style="color: #ffffff; display: block; font-size: 0.85rem; font-weight: 700;">PHARMATECH</span>
+              <span class="user-role" style="color: rgba(255,255,255,0.75); display: block; font-size: 0.7rem;">Pharmacien Titulaire</span>
+            </div>
           </div>
+          <button id="logout-btn" title="Se déconnecter" style="background: none; border: none; color: rgba(255, 255, 255, 0.6); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; transition: color 0.2s ease;">
+            <i data-lucide="log-out" style="width: 16px; height: 16px;"></i>
+          </button>
         </div>
       </div>
     </aside>
@@ -68,15 +110,40 @@
       
       <!-- Top Bar Header -->
       <header class="top-header">
-        <div class="page-title-container">
-          <h1 id="page-current-title">Tableau de Bord Exhaustif</h1>
+        <div style="display: flex; align-items: center; gap: 16px; flex-grow: 1;">
+          <!-- Menu Toggle -->
+          <button class="btn-icon-only" style="color: var(--text-secondary); width: 36px; height: 36px;">
+            <i data-lucide="menu"></i>
+          </button>
+          
+          <!-- Search Bar -->
+          <div class="header-search-wrapper" style="position: relative; max-width: 480px; width: 100%;">
+            <i data-lucide="search" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); width: 16px; height: 16px;"></i>
+            <input type="text" placeholder="Rechercher un produit, un client, une commande..." style="width: 100%; height: 44px; padding: 0 80px 0 44px; border-radius: 22px; border: 1px solid var(--card-border); background: #F8FAFC; outline: none; font-size: 13px; font-family: var(--font-sans);" />
+            <span style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 10px; color: var(--text-muted); font-family: monospace; background: #E2E8F0; padding: 2px 6px; border-radius: 4px; font-weight: 600;">Ctrl + K</span>
+          </div>
         </div>
-        <div class="header-actions">
-          <div class="alert-badge-container" id="global-notifications-trigger">
-            <button class="icon-btn">
-              <i data-lucide="bell"></i>
-            </button>
-            <span class="notification-count" id="notification-badge" style="display: none;">0</span>
+
+        <div class="header-actions" style="display: flex; align-items: center; gap: 16px;">
+          <!-- Mail icon with count -->
+          <div style="position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+            <i data-lucide="mail" style="color: var(--text-secondary); width: 20px; height: 20px;"></i>
+            <span style="position: absolute; top: 2px; right: 2px; background: #22C55E; color: white; font-size: 0.65rem; font-weight: 700; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; border: 2px solid #fff;">7</span>
+          </div>
+
+          <!-- Alert bell with count -->
+          <div class="alert-badge-container" id="global-notifications-trigger" style="position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+            <i data-lucide="bell" style="color: var(--text-secondary); width: 20px; height: 20px;"></i>
+            <span class="notification-count" id="notification-badge" style="position: absolute; top: 2px; right: 2px; background: #EF4444; color: white; font-size: 0.65rem; font-weight: 700; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; border: 2px solid #fff;">3</span>
+          </div>
+
+          <!-- Profile drop menu -->
+          <div style="display: flex; align-items: center; gap: 10px; border-left: 1px solid var(--card-border); padding-left: 16px; margin-left: 8px;">
+            <div class="avatar" style="width: 36px; height: 36px; font-size: 0.8rem; background: var(--primary-glow); color: var(--primary); font-weight: 700;">AD</div>
+            <div style="display: flex; flex-direction: column;">
+              <span style="font-size: 13px; font-weight: 700; color: var(--text-primary); line-height: 1.2;">Admin</span>
+              <span style="font-size: 11px; color: var(--text-secondary); font-weight: 500;">Pharmatech</span>
+            </div>
           </div>
         </div>
       </header>

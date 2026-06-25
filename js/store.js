@@ -79,19 +79,19 @@ const INITIAL_STATE = {
     { id: 'S008', date: '2026-06-11T11:45:00Z', items: [{ medicationId: '7', quantity: 2, price: 19.90 }, { medicationId: '5', quantity: 2, price: 55.10 }], total: 150.00, mutuelleRate: 0.90, paidByPatient: 15.00, paidByMutuelle: 135.00, patientId: '3' }
   ],
   settings: {
-    pharmacyName: 'Grande Pharmacie de la Gare',
-    address: 'Place de la Gare, Casablanca, Maroc',
+    pharmacyName: 'Grande Pharmacie PHARMATECH',
+    address: 'Boulevard Mohamed V, Casablanca, Maroc',
     taxRate: 0.07,
-    theme: 'dark'
+    theme: 'light'
   },
   reservations: [
     { id: 'R001', date: '2026-06-11T12:00:00Z', patientName: 'Nabil Elmiri', patientPhone: '0677889900', items: [{ medicationId: '1', quantity: 2, price: 13.50 }], total: 27.00, status: 'pending', prescriptionUploaded: true }
   ],
   webshop: {
-    siteTitle: 'Ma Pharmacie Connectée',
-    siteAccent: '#10b981',
+    siteTitle: 'PHARMATECH',
+    siteAccent: '#0F9D7A',
     isOnline: true,
-    bannerText: 'Réservez vos produits en ligne et récupérez-les en Click & Collect sous 30 min !'
+    bannerText: 'La technologie au service de votre santé — Réservez vos produits et récupérez-les en Click & Collect !'
   }
 };
 
@@ -128,6 +128,12 @@ class PharmaStore {
     // Force upgrades if the store has fewer medications than the new INITIAL_STATE dictionary
     if (!parsed.medications || parsed.medications.length < INITIAL_STATE.medications.length) {
       parsed.medications = INITIAL_STATE.medications;
+      this._saveState(parsed);
+    }
+    // Force settings and webshop upgrade if they are using the old brand name or lack theme value
+    if (!parsed.settings || parsed.settings.pharmacyName === 'Grande Pharmacie de la Gare' || parsed.settings.theme === 'dark') {
+      parsed.settings = INITIAL_STATE.settings;
+      parsed.webshop = INITIAL_STATE.webshop;
       this._saveState(parsed);
     }
     return parsed;

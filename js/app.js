@@ -46,7 +46,7 @@ function navigate(viewId) {
     }
   });
 
-  // Update Page Title
+  // Update Page Title if element exists
   const titleMap = {
     dashboard: 'Tableau de Bord Exhaustif',
     pos: 'Point de Vente (Caisse Express)',
@@ -56,7 +56,8 @@ function navigate(viewId) {
     reports: 'Statistiques & Rapports Financiers',
     webshop: 'Générateur de Site Web & Commandes Clients'
   };
-  document.getElementById('page-current-title').textContent = titleMap[viewId];
+  const titleEl = document.getElementById('page-current-title');
+  if (titleEl) titleEl.textContent = titleMap[viewId];
 
   // Initialize view controller
   currentRoute = viewId;
@@ -115,6 +116,16 @@ function setupGlobalUI() {
       navigate(viewId);
     });
   });
+
+  // Logout handler
+  const logoutBtn = document.getElementById('logout-btn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      sessionStorage.removeItem('pharma_authenticated');
+      localStorage.removeItem('pharma_authenticated');
+      window.location.href = 'login.html';
+    });
+  }
 }
 
 // Boot up
