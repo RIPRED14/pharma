@@ -107,6 +107,34 @@ function setupPatientSelect() {
 }
 
 function addToCart(med) {
+  // --- DRUG INTERACTION & SAFETY CHECK ---
+  const medications = store.getMedications();
+  
+  // 1. Check for Duplicate Molecule (e.g. Paracétamol overload)
+  if (med.molecule === 'Paracétamol') {
+    const hasParacetamol = cart.some(item => {
+      const cartMed = medications.find(m => m.id === item.medicationId);
+      return cartMed && cartMed.molecule === 'Paracétamol';
+    });
+    if (hasParacetamol) {
+      if (!confirm(`⚠️ ALERTE DE SÉCURITÉ : Le panier contient déjà un autre produit à base de Paracétamol. Associer "${med.name}" présente un risque important de surdosage. Voulez-vous continuer ?`)) {
+        return;
+      }
+    }
+  }
+
+  // 2. Check for NSAID Therapeutic Redundancy
+  if (med.category === 'Anti-inflammatoire') {
+    const hasNSAID = cart.some(item => {
+      const cartMed = medications.find(m => m.id === item.medicationId);
+      return cartMed && cartMed.category === 'Anti-inflammatoire';
+    });
+    if (hasNSAID) {
+      alert(`⚠️ CONTRE-INDICATION MAJEURE : Il est fortement déconseillé d'associer deux anti-inflammatoires non stéroïdiens (AINS) simultanément. Veuillez réviser la prescription.`);
+      return;
+    }
+  }
+
   const existing = cart.find(item => item.medicationId === med.id);
   
   if (existing) {

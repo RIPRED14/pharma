@@ -125,6 +125,11 @@
         </div>
 
         <div class="header-actions" style="display: flex; align-items: center; gap: 16px;">
+          <!-- AI Assistant Trigger -->
+          <div id="ai-assistant-trigger" style="position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 1px solid var(--card-border); border-radius: var(--radius-sm); color: var(--primary); background: var(--primary-glow);" title="Assistant IA Pharmaceutique">
+            <i data-lucide="sparkles" style="width: 20px; height: 20px;"></i>
+          </div>
+
           <!-- Mail icon with count -->
           <div style="position: relative; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
             <i data-lucide="mail" style="color: var(--text-secondary); width: 20px; height: 20px;"></i>
@@ -804,6 +809,36 @@
       <button class="btn btn-primary" onclick="alert('Commande transmise électroniquement au grossiste répartiteur avec succès.')" style="width: 100%; margin-top: 16px;">
         <i data-lucide="send"></i> Envoyer Commande au Fournisseur
       </button>
+    </div>
+  </div>
+
+  <!-- 6. AI Assistant Drawer Panel -->
+  <div id="ai-assistant-drawer" style="position: fixed; top: 0; right: -400px; width: 400px; height: 100vh; background: #ffffff; border-left: 1px solid var(--card-border); box-shadow: -10px 0 30px rgba(0,0,0,0.1); z-index: 9999; display: flex; flex-direction: column; transition: right 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); font-family: var(--font-sans);">
+    <!-- Header -->
+    <div style="background: linear-gradient(135deg, #082C3A 0%, #0F9D7A 100%); padding: 20px; color: #ffffff; display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <i data-lucide="sparkles" style="width: 20px; height: 20px; color: #1CC98A;"></i>
+        <h3 style="margin: 0; font-size: 1.05rem; font-weight: 700;">Assistant IA Pharmaceutique</h3>
+      </div>
+      <button id="ai-drawer-close" style="background: transparent; border: none; color: #ffffff; font-size: 1.5rem; cursor: pointer; line-height: 1;">&times;</button>
+    </div>
+    
+    <!-- Body -->
+    <div id="ai-drawer-body" style="flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #f8fafc;">
+      <div style="background: var(--primary-glow); border: 1px solid rgba(15,157,122,0.15); padding: 14px; border-radius: var(--radius-md); font-size: 0.85rem; color: var(--text-primary); line-height: 1.4;">
+        Bonjour Docteur, je suis votre assistant d'officine. Je peux vous aider à :
+        <ul style="margin-top: 6px; padding-left: 20px;">
+          <li>Vérifier les contre-indications</li>
+          <li>Analyser les interactions moléculaires</li>
+          <li>Suggérer des commandes de réapprovisionnement</li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- Footer / Input -->
+    <div style="padding: 16px; border-top: 1px solid var(--border-color); display: flex; gap: 10px; background: #ffffff;">
+      <input type="text" id="ai-drawer-input" placeholder="Poser une question clinique ou de gestion..." style="flex-grow: 1; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 0.85rem; outline: none; font-family: var(--font-sans);">
+      <button id="ai-drawer-send" style="background: var(--primary); color: #ffffff; border: none; border-radius: var(--radius-sm); width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; cursor: pointer;"><i data-lucide="send" style="width: 16px; height: 16px;"></i></button>
     </div>
   </div>
 

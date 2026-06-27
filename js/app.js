@@ -126,6 +126,85 @@ function setupGlobalUI() {
       window.location.href = 'login.html';
     });
   }
+
+  // --- AI ASSISTANT DRAWER PANEL LOGIC ---
+  const aiTrigger = document.getElementById('ai-assistant-trigger');
+  const aiDrawer = document.getElementById('ai-assistant-drawer');
+  const aiClose = document.getElementById('ai-drawer-close');
+  const aiInput = document.getElementById('ai-drawer-input');
+  const aiSend = document.getElementById('ai-drawer-send');
+  const aiBody = document.getElementById('ai-drawer-body');
+
+  if (aiTrigger && aiDrawer && aiClose) {
+    aiTrigger.onclick = () => {
+      aiDrawer.style.right = aiDrawer.style.right === '0px' ? '-400px' : '0px';
+      if (aiDrawer.style.right === '0px') {
+        aiInput.focus();
+      }
+    };
+
+    aiClose.onclick = () => {
+      aiDrawer.style.right = '-400px';
+    };
+
+    const appendAiMsg = (sender, text) => {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `ai-msg ${sender}-msg`;
+      msgDiv.style.padding = '10px 14px';
+      msgDiv.style.borderRadius = '12px';
+      msgDiv.style.fontSize = '0.85rem';
+      msgDiv.style.lineHeight = '1.4';
+      msgDiv.style.maxWidth = '85%';
+
+      if (sender === 'bot') {
+        msgDiv.style.background = 'var(--primary-glow)';
+        msgDiv.style.color = 'var(--text-primary)';
+        msgDiv.style.alignSelf = 'flex-start';
+        msgDiv.style.border = '1px solid rgba(15,157,122,0.15)';
+      } else {
+        msgDiv.style.background = 'var(--bg-deep)';
+        msgDiv.style.color = 'var(--text-primary)';
+        msgDiv.style.alignSelf = 'flex-end';
+        msgDiv.style.border = '1px solid var(--card-border)';
+      }
+
+      msgDiv.textContent = text;
+      aiBody.appendChild(msgDiv);
+      aiBody.scrollTop = aiBody.scrollHeight;
+    };
+
+    const handleAiMsgSubmit = () => {
+      const text = aiInput.value.trim();
+      if (!text) return;
+
+      appendAiMsg('user', text);
+      aiInput.value = '';
+
+      setTimeout(() => {
+        const lower = text.toLowerCase();
+        let reply = "Je recherche dans la base clinique et les stocks... ";
+
+        if (lower.includes('interaction') || lower.includes('incompatible') || lower.includes('danger')) {
+          reply = "🔍 Risques Majeurs identifiés en base :\n1. Paracétamol + Paracétamol (Doliprane + Dafalgan) : Risque de toxicité hépatique sévère.\n2. AINS (Ibuprofène + Kétoprofène) : Risque hémorragique gastrique élevé.\n3. Anticoagulants + Aspirine : Augmentation critique du temps de saignement.";
+        } else if (lower.includes('stock') || lower.includes('rupture') || lower.includes('commander')) {
+          const meds = store.getMedications();
+          const lowStock = meds.filter(m => m.stock <= m.minStock);
+          reply = `📦 Analyse des stocks : ${lowStock.length} articles sont en seuil critique ou en rupture. Je vous conseille de lancer une commande de réapprovisionnement auprès de Cooper Maroc (le fournisseur principal).`;
+        } else if (lower.includes('doliprane') || lower.includes('paracétamol')) {
+          reply = "ℹ️ Fiche Produit - Doliprane 1000mg : Indiqué en cas de douleur et/ou fièvre. Adultes : 1 comprimé de 1g par prise, à renouveler au bout de 4h minimum. Dose max : 4g/jour.";
+        } else {
+          reply = "💡 Assistant Officine : N'hésitez pas à me demander l'analyse de stock critique, les molécules incompatibles ou les posologies de base de médicaments.";
+        }
+
+        appendAiMsg('bot', reply);
+      }, 700);
+    };
+
+    aiSend.onclick = handleAiMsgSubmit;
+    aiInput.onkeydown = (e) => {
+      if (e.key === 'Enter') handleAiMsgSubmit();
+    };
+  }
 }
 
 // Boot up
