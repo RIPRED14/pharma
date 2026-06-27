@@ -61,7 +61,12 @@ const INITIAL_STATE = {
   patients: [
     { id: '1', name: 'Jean Dupont', phone: '0612345678', email: 'jean.dupont@email.com', chronicDisease: 'Hypertension', mutuelle: 'MGEN (70%)' },
     { id: '2', name: 'Marie Martin', phone: '0687654321', email: 'marie.martin@email.com', chronicDisease: 'Diabète Type 2', mutuelle: 'CNSS (80%)' },
-    { id: '3', name: 'Youssef Alami', phone: '0711223344', email: 'youssef.alami@email.com', chronicDisease: 'Aucune', mutuelle: 'CNOPS (90%)' }
+    { id: '3', name: 'Youssef Alami', phone: '0711223344', email: 'youssef.alami@email.com', chronicDisease: 'Aucune', mutuelle: 'CNOPS (90%)' },
+    { id: '4', name: 'Fatima Zahra', phone: '0655443322', email: 'fatima.z@email.com', chronicDisease: 'Asthme', mutuelle: 'CNOPS (90%)' },
+    { id: '5', name: 'Amine Benjelloun', phone: '0699887766', email: 'amine.b@email.com', chronicDisease: 'Cardiopathie', mutuelle: 'CNSS (80%)' },
+    { id: '6', name: 'Khadija El Mansouri', phone: '0611225588', email: 'khadija.mansouri@email.com', chronicDisease: 'Aucune', mutuelle: 'Aucun' },
+    { id: '7', name: 'Rachid El Idrissi', phone: '0633447788', email: 'rachid.idrissi@email.com', chronicDisease: 'Insuffisance Rénale', mutuelle: 'MGEN (70%)' },
+    { id: '8', name: 'Sofia Benani', phone: '0722334455', email: 'sofia.benani@email.com', chronicDisease: 'Aucune', mutuelle: 'Aucun' }
   ],
   suppliers: [
     { id: '1', name: 'Cooper Maroc', contact: 'Rachid Benslimane', email: 'contact@cooper.ma', phone: '0522404040' },
@@ -76,7 +81,11 @@ const INITIAL_STATE = {
     { id: 'S005', date: '2026-06-09T16:15:00Z', items: [{ medicationId: '1', quantity: 5, price: 13.50 }], total: 67.50, mutuelleRate: 0, paidByPatient: 67.50, paidByMutuelle: 0, patientId: null },
     { id: 'S006', date: '2026-06-10T17:40:00Z', items: [{ medicationId: '3', quantity: 2, price: 32.20 }, { medicationId: '6', quantity: 1, price: 28.40 }], total: 92.80, mutuelleRate: 0.70, paidByPatient: 27.84, paidByMutuelle: 64.96, patientId: '1' },
     { id: 'S007', date: '2026-06-11T09:15:00Z', items: [{ medicationId: '1', quantity: 2, price: 13.50 }], total: 27.00, mutuelleRate: 0, paidByPatient: 27.00, paidByMutuelle: 0, patientId: null },
-    { id: 'S008', date: '2026-06-11T11:45:00Z', items: [{ medicationId: '7', quantity: 2, price: 19.90 }, { medicationId: '5', quantity: 2, price: 55.10 }], total: 150.00, mutuelleRate: 0.90, paidByPatient: 15.00, paidByMutuelle: 135.00, patientId: '3' }
+    { id: 'S008', date: '2026-06-11T11:45:00Z', items: [{ medicationId: '7', quantity: 2, price: 19.90 }, { medicationId: '5', quantity: 2, price: 55.10 }], total: 150.00, mutuelleRate: 0.90, paidByPatient: 15.00, paidByMutuelle: 135.00, patientId: '3' },
+    { id: 'S009', date: '2026-06-11T13:10:00Z', items: [{ medicationId: '2', quantity: 1, price: 45.00 }], total: 45.00, mutuelleRate: 0.90, paidByPatient: 4.50, paidByMutuelle: 40.50, patientId: '4' },
+    { id: 'S010', date: '2026-06-11T14:00:00Z', items: [{ medicationId: '4', quantity: 2, price: 75.00 }], total: 150.00, mutuelleRate: 0.80, paidByPatient: 30.00, paidByMutuelle: 120.00, patientId: '5' },
+    { id: 'S011', date: '2026-06-11T14:15:00Z', items: [{ medicationId: '10', quantity: 1, price: 85.20 }], total: 85.20, mutuelleRate: 0, paidByPatient: 85.20, paidByMutuelle: 0, patientId: '6' },
+    { id: 'S012', date: '2026-06-11T14:28:00Z', items: [{ medicationId: '9', quantity: 1, price: 110.00 }], total: 110.00, mutuelleRate: 0.70, paidByPatient: 33.00, paidByMutuelle: 77.00, patientId: '7' }
   ],
   settings: {
     pharmacyName: 'Grande Pharmacie PHARMATECH',
@@ -85,7 +94,11 @@ const INITIAL_STATE = {
     theme: 'light'
   },
   reservations: [
-    { id: 'R001', date: '2026-06-11T12:00:00Z', patientName: 'Nabil Elmiri', patientPhone: '0677889900', items: [{ medicationId: '1', quantity: 2, price: 13.50 }], total: 27.00, status: 'pending', prescriptionUploaded: true }
+    { id: 'R001', date: '2026-06-11T12:00:00Z', patientName: 'Nabil Elmiri', patientPhone: '0677889900', items: [{ medicationId: '1', quantity: 2, price: 13.50 }], total: 27.00, status: 'pending', prescriptionUploaded: true },
+    { id: 'R002', date: '2026-06-11T12:30:00Z', patientName: 'Siham Oubella', patientPhone: '0688990011', items: [{ medicationId: '3', quantity: 1, price: 32.20 }], total: 32.20, status: 'completed', prescriptionUploaded: false },
+    { id: 'R003', date: '2026-06-11T13:45:00Z', patientName: 'Omar Radi', patientPhone: '0611223344', items: [{ medicationId: '2', quantity: 2, price: 45.00 }], total: 90.00, status: 'pending', prescriptionUploaded: true },
+    { id: 'R004', date: '2026-06-11T14:05:00Z', patientName: 'Laila Bennani', patientPhone: '0766778899', items: [{ medicationId: '15', quantity: 1, price: 12.50 }], total: 12.50, status: 'cancelled', prescriptionUploaded: false },
+    { id: 'R005', date: '2026-06-11T14:22:00Z', patientName: 'Hassan Jabri', patientPhone: '0633221100', items: [{ medicationId: '12', quantity: 1, price: 65.00 }], total: 65.00, status: 'pending', prescriptionUploaded: false }
   ],
   webshop: {
     siteTitle: 'PHARMATECH',
@@ -119,23 +132,26 @@ class PharmaStore {
   }
 
   _loadState() {
+    // For demonstration, always merge or force-load the new INITIAL_STATE structure
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
       this._saveState(INITIAL_STATE);
       return JSON.parse(JSON.stringify(INITIAL_STATE));
     }
     const parsed = JSON.parse(raw);
-    // Force upgrades if the store has fewer medications than the new INITIAL_STATE dictionary
+    
+    // Always force update the mock data structure (patients, sales, reservations) to include all cases
+    parsed.patients = INITIAL_STATE.patients;
+    parsed.sales = INITIAL_STATE.sales;
+    parsed.reservations = INITIAL_STATE.reservations;
+    parsed.settings = INITIAL_STATE.settings;
+    parsed.webshop = INITIAL_STATE.webshop;
+    
     if (!parsed.medications || parsed.medications.length < INITIAL_STATE.medications.length) {
       parsed.medications = INITIAL_STATE.medications;
-      this._saveState(parsed);
     }
-    // Force settings and webshop upgrade if they are using the old brand name or lack theme value
-    if (!parsed.settings || parsed.settings.pharmacyName === 'Grande Pharmacie de la Gare' || parsed.settings.theme === 'dark') {
-      parsed.settings = INITIAL_STATE.settings;
-      parsed.webshop = INITIAL_STATE.webshop;
-      this._saveState(parsed);
-    }
+    
+    this._saveState(parsed);
     return parsed;
   }
 
