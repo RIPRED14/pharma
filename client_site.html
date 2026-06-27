@@ -602,13 +602,37 @@
           
           if (matchedMed) {
             const isOut = matchedMed.stock === 0;
+            
+            // Generate dynamic usage instructions based on the category of the medicine
+            let usageInstructions = "Prendre conformément à la prescription médicale.";
+            const cat = matchedMed.category.toLowerCase();
+            
+            if (cat.includes('analgésique')) {
+              usageInstructions = "Espacer les prises d'au moins 4 à 6 heures. Ne pas dépasser la dose prescrite (max 4g/jour pour le paracétamol). À prendre avec un grand verre d'eau.";
+            } else if (cat.includes('antibiotique')) {
+              usageInstructions = "À prendre régulièrement aux heures fixes, de préférence au début des repas. Il est crucial de terminer entièrement la durée du traitement prescrite, même si les symptômes disparaissent.";
+            } else if (cat.includes('anti-inflammatoire')) {
+              usageInstructions = "À prendre obligatoirement au milieu des repas pour protéger l'estomac. Ne pas associer à un autre anti-inflammatoire ou à de l'aspirine.";
+            } else if (cat.includes('gastro')) {
+              usageInstructions = "À prendre de préférence avant les repas (pour les protecteurs d'estomac) ou au moment des douleurs. Respectez les doses journalières.";
+            } else if (cat.includes('cardiologie') || cat.includes('diabète')) {
+              usageInstructions = "Traitement de fond quotidien à prendre chaque jour à heure fixe. Ne jamais interrompre le traitement sans l'avis de votre médecin.";
+            } else if (cat.includes('allergique')) {
+              usageInstructions = "Généralement 1 comprimé par jour, de préférence le soir car ce médicament peut provoquer une légère somnolence.";
+            } else if (cat.includes('respiratoire')) {
+              usageInstructions = "Pour les inhalateurs, bien agiter avant emploi, expirer profondément, puis inspirer le produit en déclenchant la bouffée. Rincer la bouche à l'eau après utilisation.";
+            } else if (cat.includes('dermatologie')) {
+              usageInstructions = "Usage externe uniquement. Appliquer en couche mince sur une peau propre et sèche après lavage des mains. Bien refermer le tube après usage.";
+            }
+
             reply = `💊 Fiche Produit : ${matchedMed.name}
 • Catégorie : ${matchedMed.category}
 • Molécule active : ${matchedMed.molecule}
 • Prix public (PPV) : ${matchedMed.price.toFixed(2)} DH
 • Statut en pharmacie : ${isOut ? '❌ Rupture temporaire' : '🟢 Disponible immédiatement (Stock: ' + matchedMed.stock + ')'}
 
-💡 Conseil d'utilisation : Demandez conseil à notre pharmacien pour la posologie exacte de ce produit.`;
+👉 Mode d'utilisation conseillé :
+${usageInstructions}`;
           } else if (lower.includes('doliprane') || lower.includes('paracétamol')) {
             reply = "💡 Posologie Doliprane (Paracétamol) : Chez l'adulte, la dose habituelle est de 500mg à 1g par prise, à renouveler en cas de besoin toutes les 4 heures minimum. Ne pas dépasser 4g par jour. Attention aux autres médicaments contenant du paracétamol.";
           } else if (lower.includes('ibuprofène') || lower.includes('advent') || lower.includes('nurofen')) {
