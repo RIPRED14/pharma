@@ -593,9 +593,23 @@
         // Simulate bot typing and answering
         setTimeout(() => {
           const lower = text.toLowerCase();
-          let reply = "Désolé, je n'ai pas bien compris. Vous pouvez me poser des questions sur la posologie (ex: Doliprane, Rhume), ou déposer une réclamation.";
           
-          if (lower.includes('doliprane') || lower.includes('paracétamol')) {
+          // 1. First, check if the user is asking about a specific medicine in the database
+          const meds = store.getMedications();
+          const matchedMed = meds.find(m => lower.includes(m.name.toLowerCase().split(' ')[0])); // match first word (e.g. "tobrex")
+
+          let reply = "";
+          
+          if (matchedMed) {
+            const isOut = matchedMed.stock === 0;
+            reply = `💊 Fiche Produit : ${matchedMed.name}
+• Catégorie : ${matchedMed.category}
+• Molécule active : ${matchedMed.molecule}
+• Prix public (PPV) : ${matchedMed.price.toFixed(2)} DH
+• Statut en pharmacie : ${isOut ? '❌ Rupture temporaire' : '🟢 Disponible immédiatement (Stock: ' + matchedMed.stock + ')'}
+
+💡 Conseil d'utilisation : Demandez conseil à notre pharmacien pour la posologie exacte de ce produit.`;
+          } else if (lower.includes('doliprane') || lower.includes('paracétamol')) {
             reply = "💡 Posologie Doliprane (Paracétamol) : Chez l'adulte, la dose habituelle est de 500mg à 1g par prise, à renouveler en cas de besoin toutes les 4 heures minimum. Ne pas dépasser 4g par jour. Attention aux autres médicaments contenant du paracétamol.";
           } else if (lower.includes('ibuprofène') || lower.includes('advent') || lower.includes('nurofen')) {
             reply = "⚠️ Attention : L'Ibuprofène est un anti-inflammatoire non stéroïdien (AINS). Il doit être pris au milieu du repas, maximum 1200mg par jour pour l'adulte. Ne jamais l'associer à l'aspirine ou à un autre AINS.";
@@ -607,6 +621,8 @@
             reply = "⏰ Notre officine PHARMATECH est ouverte du Lundi au Samedi de 08:30 à 20:30 sans interruption. Service de garde disponible selon planning officiel.";
           } else if (lower.includes('merci') || lower.includes('ok')) {
             reply = "Avec plaisir ! N'hésitez pas si vous avez d'autres questions sur votre santé. 🟢";
+          } else {
+            reply = "Désolé, je n'ai pas trouvé ce médicament précis dans notre catalogue immédiat. Vous pouvez me poser des questions sur la posologie (ex: Doliprane, Rhume), ou déposer une réclamation.";
           }
 
           appendMessage('bot', reply);
